@@ -2,14 +2,18 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from "./services/login";
+import Notification from './components/notifications';
 import { jwtDecode } from 'jwt-decode'
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [errorMessage, setErrorMessage] = useState('');
+
+  const [notification, setNotification] = useState(null);
+
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -24,7 +28,7 @@ const App = () => {
       setUser(user);
       blogService.setToken(user.token);
     }
-  }, []) 
+  }, [])
 
   useEffect(() => {
     if (user !== null) {
@@ -51,10 +55,21 @@ const App = () => {
       setUser(user);
       setUsername('');
       setPassword('');
-    } catch (exception) {
-      setErrorMessage('Wrong credentials')
+
+      setNotification({
+        msg: 'Logged in',
+        type: 'success'
+      })
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotification(null)
+      }, 5000)
+    } catch (exception) {
+      setNotification({
+        msg: 'Invalid credentials',
+        type: 'error'
+      })
+      setTimeout(() => {
+        setNotification(null)
       }, 5000)
     }
   };
@@ -67,6 +82,14 @@ const App = () => {
     setTitle('');
     setAuthor('');
     setUrl('');
+
+    setNotification({
+      msg: 'Logged out',
+      type: 'success'
+    })
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
 
   const createNewBlog = async (event) => {
@@ -79,13 +102,38 @@ const App = () => {
       user: user
     };
 
+    const isNotBlank = (x) => {
+      return x !== null && String(x).trim() !== "";
+    }
+
+    if (![title, author, url].every(isNotBlank)) {
+      setNotification({
+        msg: 'All fields must be filled',
+        type: 'error'
+      });
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000);
+      return; // Exit the function early
+    }
+
+
     blogService.create(blog).then(response => {
       setBlogs(blogs.concat(response));
       setTitle('');
       setAuthor('');
       setUrl('');
     })
+
+    setNotification({
+      msg: `A new blog added: ${blog.title} by ${blog.author}`,
+      type: 'success'
+    })
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
+
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -106,9 +154,9 @@ const App = () => {
   const blogDisplay = () => {
     console.log("blogDisplay");
     return (<>
-      <h2>blogs</h2>
       <p> {user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
+      <h2>blogs</h2>
       {
         blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
@@ -132,17 +180,19 @@ const App = () => {
           <input type="text" value={url} name="Url" onChange={(e) => setUrl(e.target.value)} />
         </div>
 
-        <button type="submit">login</button>
+        <button type="submit">add</button>
       </form>
     </>);
   }
 
   return (
     <div>
+      <Notification notification={notification} />
       {user === null && loginForm()}
       {user !== null && blogDisplay()}
     </div>
   )
 }
+
 
 export default App
