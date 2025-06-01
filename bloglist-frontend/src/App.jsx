@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import blogService from './services/blogs'
 import loginService from "./services/login";
 import Notification from './components/Notifications';
-import { jwtDecode } from 'jwt-decode';
 
 import LoginForm from './components/LoginForm';
 import Togglable from './components/Togglable';
@@ -27,11 +26,12 @@ const App = () => {
 
   useEffect(() => {
     if (user !== null) {
-      const token = user.token;
-      const decodedToken = jwtDecode(token);
-      const id = decodedToken.id;
-
-      blogService.getByUser(id).then(response => setBlogs(response.blogs));
+      console.log(user);
+      blogService.getAll().then(response => {
+        const blogs = response.filter(blog => blog.user.name === user.name 
+          && blog.user.username === user.username);
+        setBlogs(blogs);
+      })
     }
   }, [user]);
 
@@ -42,7 +42,7 @@ const App = () => {
       window.localStorage.setItem(
         'loggedInUser', JSON.stringify(user)
       );
-      
+
       blogService.setToken(user.token);
       setUser(user);
 
