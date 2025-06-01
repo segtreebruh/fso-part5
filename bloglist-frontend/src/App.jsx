@@ -1,22 +1,17 @@
 import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from "./services/login";
-import Notification from './components/notifications';
-import { jwtDecode } from 'jwt-decode'
+import Notification from './components/Notifications';
+import { jwtDecode } from 'jwt-decode';
+
+import LoginForm from './components/LoginForm';
+import Togglable from './components/Togglable';
+import { BlogDisplay, AddNewBlog } from './components/Blog'
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-
   const [notification, setNotification] = useState(null);
-
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
 
   // check if user is present when website starts
   // if yes, then log user in 
@@ -40,21 +35,16 @@ const App = () => {
     }
   }, [user]);
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
+  const handleLoginBackend = async (credentials) => {
     try {
-      const user = await loginService.login({
-        username, password,
-      })
+      const user = await loginService.login(credentials);
 
       window.localStorage.setItem(
         'loggedInUser', JSON.stringify(user)
       );
+      
       blogService.setToken(user.token);
       setUser(user);
-      setUsername('');
-      setPassword('');
 
       setNotification({
         msg: 'Logged in',
@@ -92,19 +82,12 @@ const App = () => {
     }, 5000)
   }
 
-  const createNewBlog = async (event) => {
-    event.preventDefault();
-
-    const blog = {
-      title: title,
-      author: author,
-      url: url,
-      user: user
-    };
-
+  const addBlogBackend = async (blog) => {
     const isNotBlank = (x) => {
       return x !== null && String(x).trim() !== "";
     }
+
+    const { title, author, url } = blog;
 
     if (![title, author, url].every(isNotBlank)) {
       setNotification({
@@ -117,13 +100,10 @@ const App = () => {
       return; // Exit the function early
     }
 
+    blog.user = user;
 
-    blogService.create(blog).then(response => {
-      setBlogs(blogs.concat(response));
-      setTitle('');
-      setAuthor('');
-      setUrl('');
-    })
+    const response = await blogService.create(blog);
+    setBlogs(blogs.concat(response));
 
     setNotification({
       msg: `A new blog added: ${blog.title} by ${blog.author}`,
@@ -134,62 +114,28 @@ const App = () => {
     }, 5000)
   }
 
-
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input type="text" value={username} name="Username" onChange={(e) => setUsername(e.target.value)} />
-      </div>
-
-      <div>
-        password
-        <input type="password" value={password} name="Passowrd" onChange={(e) => setPassword(e.target.value)} />
-      </div>
-
-      <button type="submit">login</button>
-    </form>
-  )
-
-  const blogDisplay = () => {
-    console.log("blogDisplay");
-    return (<>
-      <p> {user.name} logged in</p>
-      <button onClick={handleLogout}>logout</button>
-      <h2>blogs</h2>
-      {
-        blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )
-      }
-
-      <h2>create new</h2>
-      <form onSubmit={createNewBlog}>
-        <div>
-          title
-          <input type="text" value={title} name="Title" onChange={(e) => setTitle(e.target.value)} />
-        </div>
-
-        <div>
-          author
-          <input type="text" value={author} name="Author" onChange={(e) => setAuthor(e.target.value)} />
-        </div>
-
-        <div>
-          url
-          <input type="text" value={url} name="Url" onChange={(e) => setUrl(e.target.value)} />
-        </div>
-
-        <button type="submit">add</button>
-      </form>
-    </>);
-  }
-
   return (
     <div>
+      <h2>Blogs</h2>
       <Notification notification={notification} />
-      {user === null && loginForm()}
-      {user !== null && blogDisplay()}
+      {user === null &&
+        <Togglable buttonLabel="login">
+          <LoginForm handleLoginBackend={handleLoginBackend} />
+        </Togglable>
+      }
+      {user !== null && (
+        <>
+          <BlogDisplay
+            user={user}
+            blogs={blogs}
+            handleLogout={handleLogout} />
+
+          <Togglable buttonLabel="new note">
+            <AddNewBlog
+              addBlogBackend={addBlogBackend} />
+          </Togglable>
+        </>
+      )}
     </div>
   )
 }
