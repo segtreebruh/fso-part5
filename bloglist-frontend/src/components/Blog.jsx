@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import blogService from '../services/blogs';
 
 const Blog = ({ blog }) => {
   const [display, setDisplay] = useState(false);
+  const [localBlog, setLocalBlog] = useState(blog);
 
   const blogStyle = {
     paddingTop: 10,
@@ -11,9 +13,28 @@ const Blog = ({ blog }) => {
     marginBottom: 5
   }
 
+  const increaseLike = () => {
+    const newBlog = {
+      ...localBlog,
+      likes: localBlog.likes + 1,
+      user: localBlog.user.id
+    };
+
+    setLocalBlog({
+      ...localBlog,
+      likes: localBlog.likes + 1
+    });
+
+    blogService.update(blog.id, newBlog);
+  }
+
+  const deleteBlog = () => {
+    
+  }
+
   return (
     <div style={blogStyle}>
-      {blog.title} {blog.author}
+      {localBlog.title} {localBlog.author}
       {display === false && (
         <button onClick={(e) => setDisplay(true)}>show</button>
       )}
@@ -23,10 +44,11 @@ const Blog = ({ blog }) => {
           <div>
             <p>{blog.url}</p>
             <p>
-              likes {blog.likes}
-              <button>like</button>
+              likes {localBlog.likes}
+              <button onClick={increaseLike}>like</button>
             </p>
-            <p> {blog.user?.name} </p>
+            <p> {localBlog.user?.name} </p>
+            <button>delete</button>
           </div>
         </div>
       )}

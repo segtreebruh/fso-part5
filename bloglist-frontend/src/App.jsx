@@ -19,6 +19,7 @@ const App = () => {
     const loggedInUserJSON = window.localStorage.getItem('loggedInUser');
     if (loggedInUserJSON) {
       const user = JSON.parse(loggedInUserJSON);
+      console.log(user);
       setUser(user);
       blogService.setToken(user.token);
     }
@@ -26,10 +27,11 @@ const App = () => {
 
   useEffect(() => {
     if (user !== null) {
-      console.log(user);
       blogService.getAll().then(response => {
-        const blogs = response.filter(blog => blog.user.name === user.name 
-          && blog.user.username === user.username);
+        const blogs = response.
+          filter(blog => blog.user.name === user.name
+            && blog.user.username === user.username)
+          .sort((a, b) => b.likes - a.likes);
         setBlogs(blogs);
       })
     }
