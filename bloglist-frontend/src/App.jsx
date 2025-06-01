@@ -69,9 +69,6 @@ const App = () => {
     setUser(null);
     setBlogs([]);
     blogService.setToken(null);
-    setTitle('');
-    setAuthor('');
-    setUrl('');
 
     setNotification({
       msg: 'Logged out',

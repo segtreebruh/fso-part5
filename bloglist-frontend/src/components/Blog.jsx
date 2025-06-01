@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const Blog = ({ blog }) => (
   <div>
@@ -12,6 +12,7 @@ const BlogDisplay = ({
   handleLogout
 }) => {
   console.log("blogDisplay");
+
   return (<>
     <p> {user.name} logged in</p>
     <button onClick={handleLogout}>logout</button>
@@ -38,6 +39,7 @@ const AddNewBlog = ({ addBlogBackend }) => {
     };
 
     await addBlogBackend(blog);
+
     setTitle('');
     setAuthor('');
     setUrl('');
