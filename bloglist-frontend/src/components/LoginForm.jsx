@@ -1,25 +1,36 @@
+import { useState } from 'react';
 
+const LoginForm = ({ handleLoginBackend }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-const LoginForm = ({
-  handleLogin,
-  setUsername,
-  setPassword,
-  username,
-  password
-}) => (
-  <form onSubmit={handleLogin}>
-    <div>
-      username
-      <input type="text" value={username} name="Username" onChange={(e) => setUsername(e.target.value)} />
-    </div>
+  const handleLoginFrontend = async (event) => {
+    event.preventDefault();
 
-    <div>
-      password
-      <input type="password" value={password} name="Passowrd" onChange={(e) => setPassword(e.target.value)} />
-    </div>
+    const credentials = {
+      username, password
+    }
 
-    <button type="submit">login</button>
-  </form>
-)
+    await handleLoginBackend(credentials);
+  }
+
+  return (
+    <>
+      <form onSubmit={handleLoginFrontend}>
+        <div>
+          username
+          <input type="text" value={username} name="Username" onChange={(e) => setUsername(e.target.value)} />
+        </div>
+
+        <div>
+          password
+          <input type="password" value={password} name="Passowrd" onChange={(e) => setPassword(e.target.value)} />
+        </div>
+
+        <button type="submit">login</button>
+      </form>
+    </>
+  )
+}
 
 export default LoginForm;
