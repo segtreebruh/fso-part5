@@ -20,7 +20,8 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
-    "mongoose": "^8.13.1"
+    "mongoose": "^8.13.1",
+    "prop-types": "^15.8.1"
   },
   "devDependencies": {
     "supertest": "^7.1.0"

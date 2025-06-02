@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import blogService from '../services/blogs';
+import { useState } from 'react'
+import blogService from '../services/blogs'
 
 const Blog = ({ blog }) => {
-  const [display, setDisplay] = useState(false);
-  const [localBlog, setLocalBlog] = useState(blog);
-  const [deleted, setDeleted] = useState(false);
+  const [display, setDisplay] = useState(false)
+  const [localBlog, setLocalBlog] = useState(blog)
+  const [deleted, setDeleted] = useState(false)
 
   const blogStyle = {
     paddingTop: 10,
@@ -19,25 +19,25 @@ const Blog = ({ blog }) => {
       ...localBlog,
       likes: localBlog.likes + 1,
       user: localBlog.user.id
-    };
+    }
 
     setLocalBlog({
       ...localBlog,
       likes: localBlog.likes + 1
-    });
+    })
 
-    blogService.update(blog.id, newBlog);
+    blogService.update(blog.id, newBlog)
   }
 
   const deleteBlog = () => {
     if (window.confirm(`Remove blog ${localBlog.title} by ${localBlog.author}?`)) {
-      blogService.remove(localBlog.id);
+      blogService.remove(localBlog.id)
 
-      setDeleted(true);
+      setDeleted(true)
     }
   }
 
-  if (deleted) return null;
+  if (deleted) return null
 
   return (
     <div style={blogStyle}>
@@ -60,7 +60,7 @@ const Blog = ({ blog }) => {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 const BlogDisplay = ({
@@ -68,7 +68,7 @@ const BlogDisplay = ({
   blogs,
   handleLogout
 }) => {
-  console.log("blogDisplay");
+  console.log('blogDisplay')
 
   return (<>
     <p> {user.name} logged in</p>
@@ -78,28 +78,28 @@ const BlogDisplay = ({
         <Blog key={blog.id} blog={blog} />
       )
     }
-  </>);
+  </>)
 }
 
 const AddNewBlog = ({ addBlogBackend }) => {
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const addBlog = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     const blog = {
       title: title,
       author: author,
       url: url
-    };
+    }
 
-    await addBlogBackend(blog);
+    await addBlogBackend(blog)
 
-    setTitle('');
-    setAuthor('');
-    setUrl('');
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
   return (
@@ -123,7 +123,7 @@ const AddNewBlog = ({ addBlogBackend }) => {
 
         <button type="submit">add</button>
       </form>
-    </>);
+    </>)
 }
 
-export { AddNewBlog, BlogDisplay };
+export { AddNewBlog, BlogDisplay }
