@@ -4,6 +4,7 @@ import blogService from '../services/blogs';
 const Blog = ({ blog }) => {
   const [display, setDisplay] = useState(false);
   const [localBlog, setLocalBlog] = useState(blog);
+  const [deleted, setDeleted] = useState(false);
 
   const blogStyle = {
     paddingTop: 10,
@@ -29,8 +30,14 @@ const Blog = ({ blog }) => {
   }
 
   const deleteBlog = () => {
-    
+    if (window.confirm(`Remove blog ${localBlog.title} by ${localBlog.author}?`)) {
+      blogService.remove(localBlog.id);
+
+      setDeleted(true);
+    }
   }
+
+  if (deleted) return null;
 
   return (
     <div style={blogStyle}>
@@ -48,7 +55,7 @@ const Blog = ({ blog }) => {
               <button onClick={increaseLike}>like</button>
             </p>
             <p> {localBlog.user?.name} </p>
-            <button>delete</button>
+            <button onClick={deleteBlog}>delete</button>
           </div>
         </div>
       )}
