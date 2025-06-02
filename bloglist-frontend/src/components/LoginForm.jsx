@@ -1,18 +1,18 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 const LoginForm = ({ handleLoginBackend }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLoginFrontend = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
     const credentials = {
       username, password
-    }
+    };
 
-    await handleLoginBackend(credentials)
-  }
+    await handleLoginBackend(credentials);
+  };
 
   return (
     <>
@@ -30,7 +30,7 @@ const LoginForm = ({ handleLoginBackend }) => {
         <button type="submit">login</button>
       </form>
     </>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;
