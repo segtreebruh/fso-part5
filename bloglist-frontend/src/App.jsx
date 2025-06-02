@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import blogService from './services/blogs';
-import loginService from './services/login';
-import Notification from './components/Notifications';
+import { useState, useEffect } from "react";
+import blogService from "./services/blogs";
+import loginService from "./services/login";
+import Notification from "./components/Notifications";
 
-import LoginForm from './components/LoginForm';
-import Togglable from './components/Togglable';
-import { BlogDisplay, AddNewBlog } from './components/Blog';
+import LoginForm from "./components/LoginForm";
+import Togglable from "./components/Togglable";
+import { BlogDisplay, AddNewBlog } from "./components/Blog";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -16,7 +16,7 @@ const App = () => {
   // if yes, then log user in
   // NOT DESIGNED TO RUN MULTIPLE TIMES
   useEffect(() => {
-    const loggedInUserJSON = window.localStorage.getItem('loggedInUser');
+    const loggedInUserJSON = window.localStorage.getItem("loggedInUser");
     if (loggedInUserJSON) {
       const user = JSON.parse(loggedInUserJSON);
       console.log(user);
@@ -42,23 +42,23 @@ const App = () => {
       const user = await loginService.login(credentials);
 
       window.localStorage.setItem(
-        'loggedInUser', JSON.stringify(user)
+        "loggedInUser", JSON.stringify(user)
       );
 
       blogService.setToken(user.token);
       setUser(user);
 
       setNotification({
-        msg: 'Logged in',
-        type: 'success'
+        msg: "Logged in",
+        type: "success"
       });
       setTimeout(() => {
         setNotification(null);
       }, 5000);
     } catch (exception) {
       setNotification({
-        msg: 'Invalid credentials',
-        type: 'error'
+        msg: "Invalid credentials",
+        type: "error"
       });
       setTimeout(() => {
         setNotification(null);
@@ -67,14 +67,14 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedInUser');
+    window.localStorage.removeItem("loggedInUser");
     setUser(null);
     setBlogs([]);
     blogService.setToken(null);
 
     setNotification({
-      msg: 'Logged out',
-      type: 'success'
+      msg: "Logged out",
+      type: "success"
     });
     setTimeout(() => {
       setNotification(null);
@@ -83,15 +83,15 @@ const App = () => {
 
   const addBlogBackend = async (blog) => {
     const isNotBlank = (x) => {
-      return x !== null && String(x).trim() !== '';
+      return x !== null && String(x).trim() !== "";
     };
 
     const { title, author, url } = blog;
 
     if (![title, author, url].every(isNotBlank)) {
       setNotification({
-        msg: 'All fields must be filled',
-        type: 'error'
+        msg: "All fields must be filled",
+        type: "error"
       });
       setTimeout(() => {
         setNotification(null);
@@ -106,7 +106,7 @@ const App = () => {
 
     setNotification({
       msg: `A new blog added: ${blog.title} by ${blog.author}`,
-      type: 'success'
+      type: "success"
     });
     setTimeout(() => {
       setNotification(null);

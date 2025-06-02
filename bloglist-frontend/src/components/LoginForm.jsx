@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 const LoginForm = ({ handleLoginBackend }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLoginFrontend = async (event) => {
     event.preventDefault();

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import blogService from '../services/blogs';
+import { useState } from "react";
+import blogService from "../services/blogs";
 
 const Blog = ({ blog }) => {
   const [display, setDisplay] = useState(false);
@@ -9,7 +9,7 @@ const Blog = ({ blog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: 'solid',
+    border: "solid",
     borderWidth: 1,
     marginBottom: 5
   };
@@ -68,7 +68,7 @@ const BlogDisplay = ({
   blogs,
   handleLogout
 }) => {
-  console.log('blogDisplay');
+  console.log("blogDisplay");
 
   return (<>
     <p> {user.name} logged in</p>
@@ -82,9 +82,9 @@ const BlogDisplay = ({
 };
 
 const AddNewBlog = ({ addBlogBackend }) => {
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
 
   const addBlog = async (event) => {
     event.preventDefault();
@@ -97,9 +97,9 @@ const AddNewBlog = ({ addBlogBackend }) => {
 
     await addBlogBackend(blog);
 
-    setTitle('');
-    setAuthor('');
-    setUrl('');
+    setTitle("");
+    setAuthor("");
+    setUrl("");
   };
 
   return (
